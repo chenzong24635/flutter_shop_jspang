@@ -16,18 +16,30 @@ class IndexPage extends StatefulWidget {
 class _IndexPageState extends State<IndexPage> {
   int _currentIndex = 0;
   var _currentPage;
+  PageController _pageController;
 
   @override
-  void initState(){
-    _currentPage = tabs[_currentIndex];
+  void initState() {
+    _currentPage=tabs[_currentIndex];
+    _pageController = new PageController()
+      ..addListener(() {
+        if (_currentPage != _pageController.page.round()) {
+          setState(() {
+            _currentPage = _pageController.page.round();
+          });
+        }
+  });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('百姓生活+'),),
-      body: _currentPage,
+      // appBar: AppBar(title: Text('百姓生活+'),),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: tabs,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
@@ -43,7 +55,7 @@ class _IndexPageState extends State<IndexPage> {
   }
 }
 
-final List tabs = [
+final List<Widget> tabs = [
   HomePage(),
   CategoryPage(),
   CartPage(),
